@@ -1,0 +1,5 @@
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar.sha256
+.env
+*.log
+frontend/preview.html

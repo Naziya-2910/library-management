@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Library Desk</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Library Desk home"><span class="brand-mark">L</span> Library Desk</a>
+      <span class="topbar-note">A calmer way to keep your shelves in order</span>
+    </header>
+
+    <section class="intro">
+      <div>
+        <p class="eyebrow">YOUR COLLECTION</p>
+        <h1>Every good story,<br><span>right where it belongs.</span></h1>
+        <p class="intro-copy">Keep track of the books you own, love, and lend.</p>
+      </div>
+      <button class="primary-button" id="add-book" type="button"><span aria-hidden="true">+</span> Add a book</button>
+    </section>
+
+    <section class="library-card" aria-labelledby="collection-title">
+      <div class="collection-heading">
+        <div>
+          <p class="eyebrow">THE COLLECTION</p>
+          <h2 id="collection-title">Your books <span id="book-count" class="count-pill">0</span></h2>
+        </div>
+        <label class="search-box">
+          <span class="sr-only">Search books</span>
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search title, author or ISBN">
+        </label>
+      </div>
+
+      <p id="notice" class="notice" role="status" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">BOOK</th><th scope="col">AUTHOR</th><th scope="col">ISBN</th><th scope="col">YEAR</th><th scope="col">STATUS</th><th scope="col"><span class="sr-only">Actions</span></th></tr>
+          </thead>
+          <tbody id="books"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state">
+          <span class="empty-icon" aria-hidden="true">✳</span>
+          <h3>Your shelves are ready</h3>
+          <p>Add your first book to get started.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card" id="form-card" hidden aria-labelledby="form-title">
+      <div class="form-heading">
+        <div><p class="eyebrow">BOOK DETAILS</p><h2 id="form-title">Add a book</h2></div>
+        <button class="icon-button" id="close-form" type="button" aria-label="Close form">×</button>
+      </div>
+      <form id="book-form">
+        <input id="book-id" type="hidden">
+        <div class="form-grid">
+          <label>Title<input id="title" name="title" maxlength="200" required autocomplete="off"></label>
+          <label>Author<input id="author" name="author" maxlength="160" required autocomplete="off"></label>
+          <label>ISBN (10 or 13 digits)<input id="isbn" name="isbn" inputmode="numeric" pattern="[0-9]{10}|[0-9]{13}" required></label>
+          <label>Publication year<input id="publicationYear" name="publicationYear" type="number" min="1000" max="9999" required></label>
+          <label>Status<select id="status" name="status"><option value="AVAILABLE">Available</option><option value="BORROWED">Borrowed</option></select></label>
+        </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div class="form-actions"><button class="secondary-button" id="cancel-form" type="button">Cancel</button><button class="primary-button" type="submit">Save book</button></div>
+      </form>
+    </section>
+    <footer>Made for the stories worth keeping.</footer>
+  </main>
+</body>
+</html>
