@@ -3,9 +3,9 @@ services:
     image: mysql:8.4
     environment:
       MYSQL_DATABASE: library
-      MYSQL_USER: ${MYSQL_USER:-library_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-library_dev_password}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_dev_password}
+      MYSQL_USER: ${MYSQL_USER:?Set MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -17,12 +17,12 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./librarycatalogue
     environment:
       DB_HOST: mysql
       DB_NAME: library
-      DB_USER: ${MYSQL_USER:-library_user}
-      DB_PASSWORD: ${MYSQL_PASSWORD:-library_dev_password}
+      DB_USER: ${MYSQL_USER:?Set MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
     depends_on:
       mysql:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./libraryshop
       args: {}
     environment:
       BACKEND_URL: http://backend:8080

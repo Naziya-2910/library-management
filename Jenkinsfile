@@ -9,8 +9,8 @@ pipeline {
     }
 
     environment {
-        BACKEND_REPOSITORY = 'library-backend'
-        FRONTEND_REPOSITORY = 'library-frontend'
+        CATALOGUE_REPOSITORY = 'librarycatalogue'
+        SHOP_REPOSITORY = 'libraryshop'
     }
 
     stages {
@@ -29,7 +29,7 @@ pipeline {
 
         stage('Maven build and tests') {
             steps {
-                dir('backend') {
+                dir('librarycatalogue') {
                     sh 'chmod +x ./mvnw && ./mvnw -B clean verify'
                 }
             }
@@ -41,10 +41,10 @@ pipeline {
                     set -eu
                     aws ecr get-login-password --region "$AWS_REGION" \
                       | docker login --username AWS --password-stdin "$ECR_REGISTRY"
-                    docker build -t "$ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG" ./backend
-                    docker build -t "$ECR_REGISTRY/$FRONTEND_REPOSITORY:$IMAGE_TAG" ./frontend
-                    docker push "$ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
-                    docker push "$ECR_REGISTRY/$FRONTEND_REPOSITORY:$IMAGE_TAG"
+                    docker build -t "$ECR_REGISTRY/$CATALOGUE_REPOSITORY:$IMAGE_TAG" ./librarycatalogue
+                    docker build -t "$ECR_REGISTRY/$SHOP_REPOSITORY:$IMAGE_TAG" ./libraryshop
+                    docker push "$ECR_REGISTRY/$CATALOGUE_REPOSITORY:$IMAGE_TAG"
+                    docker push "$ECR_REGISTRY/$SHOP_REPOSITORY:$IMAGE_TAG"
                 '''
             }
         }
@@ -56,17 +56,17 @@ pipeline {
                     aws eks update-kubeconfig --region "$AWS_REGION" --name "$EKS_CLUSTER"
                     kubectl create namespace "$K8S_NAMESPACE" --dry-run=client -o yaml | kubectl apply -f -
                     kubectl apply -n "$K8S_NAMESPACE" \
-                      -f kubernetes/mysql/pvc.yaml \
-                      -f kubernetes/mysql/deployment.yaml \
-                      -f kubernetes/mysql/service.yaml \
-                      -f kubernetes/backend/deployment.yaml \
-                      -f kubernetes/backend/service.yaml \
-                      -f kubernetes/frontend/deployment.yaml \
-                      -f kubernetes/frontend/service.yaml
+                      -f kubernetes/librarydatabase/pvc.yaml \
+                      -f kubernetes/librarydatabase/deployment.yaml \
+                      -f kubernetes/librarydatabase/service.yaml \
+                      -f kubernetes/librarycatalogue/deployment.yaml \
+                      -f kubernetes/librarycatalogue/service.yaml \
+                      -f kubernetes/libraryshop/deployment.yaml \
+                      -f kubernetes/libraryshop/service.yaml
                     kubectl set image -n "$K8S_NAMESPACE" deployment/library-backend \
-                      backend="$ECR_REGISTRY/$BACKEND_REPOSITORY:$IMAGE_TAG"
+                      backend="$ECR_REGISTRY/$CATALOGUE_REPOSITORY:$IMAGE_TAG"
                     kubectl set image -n "$K8S_NAMESPACE" deployment/library-frontend \
-                      frontend="$ECR_REGISTRY/$FRONTEND_REPOSITORY:$IMAGE_TAG"
+                      frontend="$ECR_REGISTRY/$SHOP_REPOSITORY:$IMAGE_TAG"
                     kubectl rollout status -n "$K8S_NAMESPACE" deployment/mysql --timeout=5m
                     kubectl rollout status -n "$K8S_NAMESPACE" deployment/library-backend --timeout=5m
                     kubectl rollout status -n "$K8S_NAMESPACE" deployment/library-frontend --timeout=5m

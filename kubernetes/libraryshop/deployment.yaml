@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: library-frontend:local
+          image: libraryshop:local
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
