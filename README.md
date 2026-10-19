@@ -38,7 +38,7 @@ library-management/
 
 The existing MySQL Deployment, Service, PVC, and Secret name are retained so applying the new paths does not replace the database claim or its data. The MySQL image is the upstream `mysql:8.4` image; it does not need a custom Dockerfile. `librarydatabase` contains Kubernetes configuration, not a separate application or SQL schema.
 
-The workspace already contained a `docker-compose.yml`. This setup does not use Docker Compose; its existing build contexts were updated to follow the renamed folders, and all build and run instructions below use individual Docker commands.
+This repository does not include a `docker-compose.yml`. Build and start each image with the individual Docker commands below.
 
 ## Requirements
 
@@ -103,7 +103,9 @@ docker run --name libraryshop --network library-network -p 8081:80 `
   -e BACKEND_URL=http://backend:8080 -d libraryshop:local
 ```
 
-Open <http://localhost:8081>. The UI proxies `/api/*` and `/healthz` to the API. Test the health endpoint and CRUD API:
+The `docker run -d` commands print each container ID. To view startup and runtime output, run `docker logs -f backend` or substitute `mysql` or `libraryshop`; press Ctrl+C to stop following logs (the container keeps running).
+
+Open <http://localhost:8081> to use the UI. It proxies `/api/*` and `/healthz` to the API. The following PowerShell commands print the health response and CRUD API results:
 
 ```powershell
 Invoke-RestMethod http://localhost:8081/healthz
