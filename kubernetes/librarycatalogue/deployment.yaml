@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: librarycatalogue:local
+          image: 822426641221.dkr.ecr.ap-south-1.amazonaws.com/librarycatalogue:2-5116161
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
